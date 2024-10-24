@@ -1,3 +1,5 @@
+#!/usr/bin/env python3
+
 import cProfile
 import pstats
 import io
@@ -69,17 +71,20 @@ def cycle_check_brute(head):
     if not isinstance(head, (listNode, type(None))):
         raise ValueError("head must be a listNode instance or None.")
  
-    node_set = set() 
+    # node_set = set() 
+    node_table = []
 
     current = head
     while current:
         # current.display()
-        if current in node_set:
+        # if current in node_set:
+        if current in node_table:
             print("Cycle detected!\nCurrently at:")
             current.display()
             return 1
         else: 
-            node_set.add(current)
+            # node_set.add(current)
+            node_table.append(current)
         current = current.nextp
     print("Reached end of list. No cycles.")
     return 0
@@ -134,6 +139,43 @@ def profile_function(func, *args, **kwargs):
     return stream.getvalue()
 
 
+# Function to format the output in milliseconds
+def convert_to_ms(output):
+    result_lines = []
+    result_lines.append("\nTiming results:\n")
+    result_lines.append(output.splitlines()[0])
+    result_lines.append("\t Following times in msec.")
+    for line in output.splitlines()[1:]:
+        # Identify lines with timing data (lines with "tottime" and "cumtime" columns)
+        #if line.strip() and line[0].isdigit():
+        if line.strip() and line.strip()[0].isdigit():
+            columns = line.split()  # split the line into columns
+            try:
+                # Convert seconds to milliseconds (multiply by 1000)
+                tottime_ms = float(columns[1]) * 1000
+                percall_tottime_ms = float(columns[2]) * 1000
+                cumtime_ms = float(columns[3]) * 1000
+                percall_cumtime_ms = float(columns[4]) * 1000
+
+                # Format the converted times and rebuild the line
+                formatted_line = (
+                    f"{columns[0]:>9} {tottime_ms:>8.3f} {percall_tottime_ms:>8.3f} "
+                    f"{cumtime_ms:>8.3f} {percall_cumtime_ms:>8.3f} {columns[5]}"
+                )
+                result_lines.append(formatted_line)
+            except ValueError as e:
+                # If there's an issue converting values, append the original line
+                print(f"Error converting line: {line}")
+                print(f"Error details: {e}")
+                result_lines.append(line)
+        else:
+            # Non-data lines, just append as-is
+            result_lines.append(line)
+
+    return "\n".join(result_lines)
+
+
+
 def contrast_functions(func1, func2, *args, **kwargs):
     """
     Profiles and contrasts two functions.
@@ -146,11 +188,15 @@ def contrast_functions(func1, func2, *args, **kwargs):
     """
     print(f'\n\nProfiling {func1.__name__} :')
     result1 = profile_function(func1, *args, **kwargs)
-    print(result1)
-    
+    result1_in_ms = convert_to_ms(result1)
+    print(result1_in_ms)
+#    print(result1)
+
     print(f'\n\nProfiling {func2.__name__} :')
     result2 = profile_function(func2, *args, **kwargs)
-    print(result2)
+    result2_in_ms = convert_to_ms(result2)
+    print(result2_in_ms)
+#    print(result2)
 
 
 def main(elemnum, cycle):
@@ -174,3 +220,4 @@ if __name__ == "__main__":
 
     # Call the main function with the arguments
     main(elemnum, cycle)
+
