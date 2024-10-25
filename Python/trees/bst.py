@@ -65,15 +65,19 @@ class BinarySearchTree:
 
 		def __by_level(node, level, pos, treearray):
 			if node is None:
+				print('node is none')
 				return None
 
 			if level >= len(treearray):
+				print('level greater than array length')
 				return None
 
 			if pos < 0 or pos >= len(treearray[level]):
+				print('pos out of bounds')
 				return None
 			
 			treearray[level][pos] = str(node.val)
+			print(treearray[level][pos])
 			__by_level(node.leftp, level + 1, pos - 2**(depth - level - 1), treearray)
 			__by_level(node.rightp, level + 1, pos + 2**(depth - level - 1), treearray)
 
@@ -86,6 +90,8 @@ class BinarySearchTree:
 		
 		return self.n
 
+	def get_root(self):
+		return self.root
 
 	def insert(self, val):
 		
@@ -113,17 +119,19 @@ class BinarySearchTree:
 
 	def search(self, val):
 
-		def __bstsearch(root, val):
-			if root == None:
+		def __bst_search_rec(node, val):
+			if node == None:
 				return None
-			if root.getVal() == val:
-				return root
+			if node.getVal() == val:
+				return node
 
-			if val < root.getVal() :
-				root = __bstsearch(root.leftp, val)
+			if val < node.getVal() :
+				node = __bst_search_rec(node.leftp, val)
 			else:
-				root = __bstsearch(root.rightp, val)
-			return root
+				node = __bst_search_rec(node.rightp, val)
+			return node
+		
+		return __bst_search_rec(self.root, val)
 
 	def delete(self, val):
 		delnode = self.search(val)

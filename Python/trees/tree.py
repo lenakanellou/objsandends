@@ -12,7 +12,7 @@ def main():
 	for e in nodelst:
 		tree.insert(int(e))
 
-	print(f'Your BST has {tree.visualize()} nodes.')
+	print(f'Your BST has {tree.visualize()} nodes, root at {tree.get_root().getVal()}.')
 
 	"""
 	s = input('Enter one more value to insert! >  ')
