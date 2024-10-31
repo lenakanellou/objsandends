@@ -3,31 +3,38 @@ from bst import BinarySearchTree
 
 def main():
 
-	s = input('Enter some values to create a BST! >  ')
+    s = input('Enter some values to create a BST! >  ')
 
-	nodelst = s.split()
+    nodelst = s.split()
 
-	tree = BinarySearchTree()
+    tree = BinarySearchTree()
 
-	for e in nodelst:
-		tree.insert(int(e))
+    for e in nodelst:
+        tree.insert(int(e))
 
-	print(f'Your BST has {tree.visualize()} nodes, root at {tree.get_root().getVal()}.')
+    print("Your BST contains the following values, in-order:")
+    for node in tree:
+        print(f'{node}', end = ' ')
+    print()
 
-	"""
-	s = input('Enter one more value to insert! >  ')
-	node = s.split()[0]
-	tree.insert(node)
-	"""
+    print("A BFS on your BST shows nodes organized in the following levels, according to the values:")
+    tree.treeBFS()
 
-	print("Your BST contains the following nodes, in-order:")
-	for node in tree:
-		print(node)
+    while(1):
 
-	s = input('Enter a value to delete >  ')
-	delval = int(s)
-	tree.delete(delval)
+        print('Here\'s a visualization of your tree.')
+        tree.visualize()
+
+        s = input('Enter a value to delete >  ')
+        try:
+            delval = int(s)  # Try to convert input to integer
+            tree.delete(delval)
+        except ValueError:  # If conversion fails, exit the loop
+            print("Exiting.")
+            break
+
+
 
 
 if __name__ == "__main__":
-	main()
+    main()
