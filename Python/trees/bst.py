@@ -87,64 +87,25 @@ class BinarySearchTree:
 
 
     def visualize(self):
-        levels_visual = [deque(str(self.root.getVal()))]
-        next_level_visual = deque(' ' * len(str(self.root.getVal())))
-        #levels_visual.append(next_level_visual)
-        levels_visual.append(deque())
 
-        level_list = [self.root]
-        next_level_list = []
-        level = 0
+        visualization_levels = []
+       
+        def __aggregate_subtree(rootnode, level, root_length, visualization_matrix):
 
-        def __visit_node(node):
-            if node == None:
-                return None, None
-            return node.leftChild(), node.rightChild()
+            if rootnode is None:
+                return 0
 
+            offset = len(str(rootnode.getVal()))
+            left_offset = __aggregate_subtree(rootnode.getLeftChild(), level+1, offset, visualization_matrix)
+            right_offset = __aggregate_subtree(rootnode.getttChild(), level+1, offset, visualization_matrix)
 
-        def __create_level_visual(level_list, level, levels_visual):
-            next_level_list = []
-            # print(f'Level is {level}, list of levels has {len(levels_visual)} deques')
-            if len(levels_visual)-2 < level:
-                levels_visual.append(deque())
-            #     print(f'New length of list of levels is {len(levels_visual)}')
-            # for item in levels_visual:
-            #     print(type(item))
-            for node in level_list:
-                left, right = __visit_node(node)
-                if left != None and left != False:
-                    next_level_list.append(left)
-                    # levels_visual[level+1].appendleft(' ')
-                    levels_visual[level+1].append(str(left.getVal()))
-                    levels_visual[level+1].append(' ')
-                else:
-                    levels_visual[level+1].append('X ')
+            return (offset+left_offset+right_offset)
 
-                levels_visual[level+1].append(' ' * len(str(node.getVal())))
+        __aggregate_subtree(self.root, 0, len(str(self.root.getVal())), visualization_levels)
 
-                if right != None and right != False:
-                    next_level_list.append(right)
-                    # levels_visual[level+1].append(' ')
-                    levels_visual[level+1].append(str(right.getVal()))
-                else:
-                    levels_visual[level+1].append(' X')
-
-                levels_visual[level+1].append('  ')
-
-            return next_level_list
-
-        while level_list != [] :
-            # print(*(node.getVal() for node in level_list))
-            next_level_list = __create_level_visual(level_list, level, levels_visual)
-            level_list = next_level_list
-
-            level = level + 1
-
-            for l in range(0, level):
-                levels_visual[l].appendleft('  ')
-
-        for row in levels_visual:
-            print(*(element for element in row))
+        for row in visualization_levels:
+            print(row)
+ 
 
     def get_root(self):
         return self.root
